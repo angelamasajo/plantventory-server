@@ -5,6 +5,7 @@ const cors = require('cors')
 const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
 const usersRouter = require('./users/users-router')
+const plantsRouter = require('./plants/plants-router')
 
 const app = express()
 
@@ -22,6 +23,7 @@ app.get('/api', (req, res) => {
 })
 
 app.use('/api/users', usersRouter)
+app.use('/api/plants', plantsRouter)
 
 app.use(function errorHandler(error, req, res, next) {
   let response

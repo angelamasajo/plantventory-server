@@ -9,8 +9,8 @@ const jsonParser = express.json()
 
 const serializeUsers = user => ({
   id: user.id,
-  userName: user.userName,
-  userPassword: user.userPassword
+  user_name: user.user_name,
+  user_password: user.user_password
 })
 
 usersRouter
