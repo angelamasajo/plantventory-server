@@ -7,7 +7,7 @@ const UsersService = require('./users-service')
 const usersRouter = express.Router()
 const jsonParser = express.json()
 
-const serializeUsers = user => ({
+const serializeUser = user => ({
   id: user.id,
   user_name: user.user_name,
   user_password: user.user_password
@@ -19,7 +19,7 @@ usersRouter
     const knexInstance = req.app.get('db')
     UsersService.getAllUsers(knexInstance)
       .then(users => {
-        res.json(users.map(serializeUsers))
+        res.json(users.map(serializeUser))
       })
       .catch(next)
   })
