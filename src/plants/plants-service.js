@@ -13,6 +13,13 @@ const PlantsService = {
         return rows[0]
       })
   },
+  getById(knex, id) {
+    return knex
+      .from('plants')
+      .select('*')
+      .where('id', id)
+      .first()
+  },
 }
 
 module.exports = PlantsService

@@ -15,6 +15,7 @@ const serializePlant = plant => ({
   care_details: plant.care_details
 })
 
+//allplants
 plantsRouter
   .route('/')
   .get((req, res, next) => {
@@ -46,6 +47,29 @@ plantsRouter
           .json(serializePlant(plant))
       })
       .catch(next)
+  })
+
+//specific plant
+plantsRouter
+  .route('/:plant_id')
+  .all((req, res, next) => {
+    PlantsService.getById(
+      req.app.get('db'),
+      req.params.plant_id
+    )
+      .then(plant => {
+        if (!plant) {
+          return res.status(404).json({
+            error: { message: `Plant doesn't exist` }
+          })
+        }
+        res.plant = plant //save the article for the next middleware
+        next() //don't forget to call next so the next middleware happens
+      })
+      .catch(next)
+  })
+  .get((req, res, next) => {
+    res.json(serializePlant(res.plant))
   })
 
 module.exports = plantsRouter
