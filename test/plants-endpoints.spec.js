@@ -2,7 +2,7 @@ const knex = require('knex')
 const supertest = require('supertest')
 const app = require('../src/app')
 const { makePlantsArray } = require('./plants.fixtures')
-// const { makeUsersArray } = require('./users.fixtures')
+const { makeUsersArray } = require('./users.fixtures')
 
 describe('Plants Endpoints', function() {
   let db
@@ -21,6 +21,7 @@ describe('Plants Endpoints', function() {
 
   afterEach('cleanup',() => db.raw('TRUNCATE plants, users, user_plants RESTART IDENTITY CASCADE'))
 
+  //-----all plants
   describe(`GET /api/plants`, () => {
     context(`Given no plants`, () => {
       it(`responds with 200 and an empty list`, () => {
@@ -30,26 +31,42 @@ describe('Plants Endpoints', function() {
       })
     })
 
-    // context('Given there are plants in the database', () => {
-    //   // const testUsers = makeUsersArray()
-    //   const testPlants = makePlantsArray()
+    //not sure what's really happening here
+    context('Given there are plants in the database', () => {
+      const testUsers = makeUsersArray()
+      const testPlants = makePlantsArray()
 
-    //   beforeEach('insert articles', () => {
-    //     return db
-    //       .into('blogful_users')
-    //       .insert(testUsers)
-    //       .then(() => {
-    //         return db
-    //           .into('blogful_articles')
-    //           .insert(testArticles)
-    //       }) 
-    //   })
+      beforeEach('insert plants', () => {
+        return db
+          .into('users')
+          .insert(testUsers)
+          .then(() => {
+            return db
+              .into('plants')
+              .insert(testPlants)
+          }) 
+      })
 
-    //   it('responds with 200 and all of the articles', () => {
-    //     return supertest(app)
-    //       .get('/api/articles')
-    //       .expect(200, testArticles)
-    //   })
-    // })
+      it('responds with 200 and all of the plants', () => {
+        return supertest(app)
+          .get('/api/plants')
+          .expect(200, testPlants)
+      })
+    })
+  })
+
+
+
+
+  //----specific plants
+  describe(`GET /api/plants/:plant_id`, () => {
+    context(`Given no plants`, () => {
+      it(`responds with 404`, () => {
+        const plantId = 123456
+        return supertest(app)
+          .get(`/api/plants/${plantId}`)
+          .expect(404, { error: { message: `Plant doesn't exist` } })
+      })
+    })
   })
 })
