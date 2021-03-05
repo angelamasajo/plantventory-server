@@ -60,11 +60,12 @@ function makeMaliciousPlant() {
     content: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`,
   };
   return {
-    maliciousArticle,
-    expectedArticle,
+    maliciousPlant,
+    expectedPlant,
   };
 }
 
 module.exports = {
   makePlantsArray,
+  makeMaliciousPlant
 };

@@ -1,7 +1,7 @@
 const knex = require('knex')
 const supertest = require('supertest')
 const app = require('../src/app')
-const { makePlantsArray } = require('./plants.fixtures')
+const { makePlantsArray, makeMaliciousPlant } = require('./plants.fixtures')
 const { makeUsersArray } = require('./users.fixtures')
 
 describe('Plants Endpoints', function() {
@@ -53,6 +53,36 @@ describe('Plants Endpoints', function() {
           .expect(200, testPlants)
       })
     })
+
+    context(`Given an XSS attack plant`, () => {
+      const testUsers = makeUsersArray()
+      const { maliciousPlant, expectedPlant } = makeMaliciousPlant()
+
+      beforeEach('insert malicious article', () => {
+        return db
+          .into('users')
+          .insert(testUsers)
+          .then(() => {
+            return db
+              .into('plants')
+              .insert([ maliciousPlant ])
+          })
+      })
+
+
+      it('removes XSS attack content', () => {
+        return supertest(app)
+          .get(`/api/plants`)
+          .expect(200)
+          .expect(res => {
+            expect(res.body[0].name).to.eql(expectedPlant.name)
+            expect(res.body[0].plant_type).to.eql(expectedPlant.plant_type)
+            expect(res.body[0].toxicity).to.eql(expectedPlant.toxicity)
+            expect(res.body[0].care_details).to.eql(expectedPlant.care_details)
+          })
+      })
+    })    
+
   })
 
 
