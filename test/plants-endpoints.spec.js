@@ -86,8 +86,6 @@ describe('Plants Endpoints', function() {
   })
 
 
-
-
   //----specific plants
   describe(`GET /api/plants/:plant_id`, () => {
     context(`Given no plants`, () => {
@@ -122,6 +120,35 @@ describe('Plants Endpoints', function() {
           .expect(200, expectedPlant)
       })
     })
+
+    context(`Given an XSS attack plant`, () => {
+      const testUsers = makeUsersArray()
+      const { maliciousPlant, expectedPlant } = makeMaliciousPlant()
+
+      beforeEach('insert malicious plant', () => {
+        return db
+          .into('users')
+          .insert(testUsers)
+          .then(() => {
+            return db
+              .into('plants')
+              .insert([ maliciousPlant ])
+          })
+      })
+
+      it('removes XSS attack content', () => {
+        return supertest(app)
+          .get(`/api/plants/${maliciousPlant.id}`)
+          .expect(200)
+          .expect(res => {
+            expect(res.body.name).to.eql(expectedPlant.name)
+            expect(res.body.plant_type).to.eql(expectedPlant.plant_type)
+            expect(res.body.toxicity).to.eql(expectedPlant.toxicity)
+            expect(res.body.care_details).to.eql(expectedPlant.care_details)
+          })
+      })
+    })
+
   })
 
   // describe(`POST /api/plants`, () => {
