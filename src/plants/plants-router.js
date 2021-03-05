@@ -15,7 +15,7 @@ const serializePlant = plant => ({
   care_details: plant.care_details
 })
 
-//allplants
+//-----all plants
 plantsRouter
   .route('/')
   .get((req, res, next) => {
@@ -49,7 +49,7 @@ plantsRouter
       .catch(next)
   })
 
-//specific plant
+//-----specific plant
 plantsRouter
   .route('/:plant_id')
   .all((req, res, next) => {
@@ -70,6 +70,16 @@ plantsRouter
   })
   .get((req, res, next) => {
     res.json(serializePlant(res.plant))
+  })
+  .delete((req, res, next) => {
+    PlantsService.deletePlant(
+      req.app.get('db'),
+      req.params.plant_id
+    )
+      .then(() => {
+        res.status(204).end()
+      })
+      .catch(next)
   })
 
 module.exports = plantsRouter

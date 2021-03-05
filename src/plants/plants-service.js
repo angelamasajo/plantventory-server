@@ -20,6 +20,11 @@ const PlantsService = {
       .where('id', id)
       .first()
   },
+  deletePlant(knex, id) {
+    return knex('plants')
+      .where({ id })
+      .delete()
+  },
 }
 
 module.exports = PlantsService
