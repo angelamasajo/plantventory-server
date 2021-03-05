@@ -3,6 +3,7 @@ const express = require('express')
 // const xss = require('xss')
 const logger = require('../logger')
 const UsersService = require('./users-service')
+const app = require('../app')
 
 const usersRouter = express.Router()
 const jsonParser = express.json()
@@ -23,5 +24,31 @@ usersRouter
       })
       .catch(next)
   })
+
+usersRouter
+  .route('/plants')
+  .get((req,res, next) => {
+    const knexInstance = req.app.get('db')
+    UsersService.getAllPlantUsers(knexInstance)
+      .then(users => {
+        res.json(users)
+      })
+      .catch(next)
+  })
+
+usersRouter
+  .route('/plants/:plant_id')
+  .delete((req, res, next) => {
+  UsersService.deleteFromUserPlants(
+    req.app.get('db'),
+    req.params.plant_id
+  )
+    .then(() => {
+      res.status(204).end()
+    })
+    .catch(next)
+})
+
+  
 
 module.exports = usersRouter
