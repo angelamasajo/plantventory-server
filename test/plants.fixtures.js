@@ -51,13 +51,14 @@ function makeMaliciousPlant() {
     name: 'hahahaha',
     plant_type: 'Other', 
     toxicity: 'Pet-safe',
-    care_details: 'broken image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. Bad stuff out here',
+    care_details: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`,
   };
   const expectedPlant = {
     ...maliciousPlant,
-    title:
-      'Naughty naughty very naughty &lt;script&gt;alert("xss");&lt;/script&gt;',
-    content: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`,
+    name: 'hahahaha',
+    plant_type: 'Other',
+    toxicity: 'Pet-safe',
+    care_details: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`,
   };
   return {
     maliciousPlant,

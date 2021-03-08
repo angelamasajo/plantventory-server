@@ -58,7 +58,7 @@ describe('Plants Endpoints', function() {
       const testUsers = makeUsersArray()
       const { maliciousPlant, expectedPlant } = makeMaliciousPlant()
 
-      beforeEach('insert malicious article', () => {
+      beforeEach('insert malicious plant', () => {
         return db
           .into('users')
           .insert(testUsers)
