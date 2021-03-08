@@ -1,6 +1,7 @@
 const knex = require('knex')
 const supertest = require('supertest')
 const app = require('../src/app')
+const { makePlantsArray } = require('./plants.fixtures')
 // const { makePlantsArray, makeMaliciousPlant } = require('./plants.fixtures')
 const { makeUsersArray, makeMaliciousUser } = require('./users.fixtures')
 
@@ -34,16 +35,17 @@ describe('Users Endpoints', function() {
     //not sure what's really happening here
     context('Given there are users in the database', () => {
       const testUsers = makeUsersArray()
+      const testPlants = makePlantsArray()
 
       beforeEach('insert users', () => {
         return db
-          .into('users')
-          .insert(testUsers)
-          // .then(() => {
-          //   return db
-          //     .into('users')
-          //     .insert(testUsers)
-          // }) 
+          .into('plants')
+          .insert(testPlants)
+          .then(() => {
+            return db
+              .into('users')
+              .insert(testUsers)
+          }) 
       })
 
       it('responds with 200 and all of the users', () => {
@@ -54,13 +56,13 @@ describe('Users Endpoints', function() {
     })
 
     context(`Given an XSS attack user`, () => {
-      const testUsers = makeUsersArray()
+      const testPlants = makePlantsArray()
       const { maliciousUser, expectedUser } = makeMaliciousUser()
 
       beforeEach('insert malicious user', () => {
         return db
-          .into('users')
-          .insert(testUsers)
+          .into('plants')
+          .insert(testPlants)
           .then(() => {
             return db
               .into('users')
