@@ -31,59 +31,55 @@ describe('Users Endpoints', function() {
       })
     })
 
-  //   //not sure what's really happening here
-  //   context('Given there are plants in the database', () => {
-  //     const testUsers = makeUsersArray()
-  //     const testPlants = makePlantsArray()
+    //not sure what's really happening here
+    context('Given there are users in the database', () => {
+      const testUsers = makeUsersArray()
 
-  //     beforeEach('insert plants', () => {
-  //       return db
-  //         .into('users')
-  //         .insert(testUsers)
-  //         .then(() => {
-  //           return db
-  //             .into('plants')
-  //             .insert(testPlants)
-  //         }) 
-  //     })
+      beforeEach('insert users', () => {
+        return db
+          .into('users')
+          .insert(testUsers)
+          // .then(() => {
+          //   return db
+          //     .into('users')
+          //     .insert(testUsers)
+          // }) 
+      })
 
-  //     it('responds with 200 and all of the plants', () => {
-  //       return supertest(app)
-  //         .get('/api/plants')
-  //         .expect(200, testPlants)
-  //     })
-  //   })
+      it('responds with 200 and all of the users', () => {
+        return supertest(app)
+          .get('/api/users')
+          .expect(200, testUsers)
+      })
+    })
 
-  //   context(`Given an XSS attack plant`, () => {
-  //     const testUsers = makeUsersArray()
-  //     const { maliciousPlant, expectedPlant } = makeMaliciousPlant()
+    context(`Given an XSS attack user`, () => {
+      const testUsers = makeUsersArray()
+      const { maliciousUser, expectedUser } = makeMaliciousUser()
 
-  //     beforeEach('insert malicious article', () => {
-  //       return db
-  //         .into('users')
-  //         .insert(testUsers)
-  //         .then(() => {
-  //           return db
-  //             .into('plants')
-  //             .insert([ maliciousPlant ])
-  //         })
-  //     })
+      beforeEach('insert malicious user', () => {
+        return db
+          .into('users')
+          .insert(testUsers)
+          .then(() => {
+            return db
+              .into('users')
+              .insert([ maliciousUser ])
+          })
+      })
 
 
-  //     it('removes XSS attack content', () => {
-  //       return supertest(app)
-  //         .get(`/api/plants`)
-  //         .expect(200)
-  //         .expect(res => {
-  //           expect(res.body[0].name).to.eql(expectedPlant.name)
-  //           expect(res.body[0].plant_type).to.eql(expectedPlant.plant_type)
-  //           expect(res.body[0].toxicity).to.eql(expectedPlant.toxicity)
-  //           expect(res.body[0].care_details).to.eql(expectedPlant.care_details)
-  //         })
-  //     })
-  //   })    
-
-  // })
+      it('removes XSS attack content', () => {
+        return supertest(app)
+          .get(`/api/users`)
+          .expect(200)
+          .expect(res => {
+            expect(res.body[0].user_name).to.eql(expectedUser.user_name)
+            expect(res.body[0].user_password).to.eql(expectedUser.user_password)
+          })
+      })
+    })    
+  })
 
 
   // //----specific plants
@@ -221,5 +217,5 @@ describe('Users Endpoints', function() {
   //         expect(res.body.care_details).to.eql(expectedPlant.care_details)
   //       })
   //   })
-  })
+
 })

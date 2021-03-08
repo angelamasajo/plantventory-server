@@ -31,7 +31,7 @@ function makeMaliciousUser() {
   };
   return {
     maliciousUser,
-    expectedArticle,
+    expectedUser,
   };
 }
 
