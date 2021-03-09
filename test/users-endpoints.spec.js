@@ -22,7 +22,7 @@ describe('Users Endpoints', function() {
 
   afterEach('cleanup',() => db.raw('TRUNCATE plants, users, user_plants RESTART IDENTITY CASCADE'))
 
-  //-----all plants
+  //-----all users
   describe(`GET /api/users`, () => {
     context(`Given no users`, () => {
       it(`responds with 200 and an empty list`, () => {
@@ -84,16 +84,49 @@ describe('Users Endpoints', function() {
   })
 
 
-  // //----specific plants
-  // describe(`GET /api/plants/:plant_id`, () => {
-  //   context(`Given no plants`, () => {
-  //     it(`responds with 404`, () => {
-  //       const plantId = 123456
-  //       return supertest(app)
-  //         .get(`/api/plants/${plantId}`)
-  //         .expect(404, { error: { message: `Plant doesn't exist` } })
-  //     })
-  //   })
+  //----all plants with user
+  describe(`GET /api/users/plants`, () => {
+    context(`Given no plants with user`, () => {
+      it(`responds with 200 and an empty list`, () => {
+        return supertest(app)
+          .get('/api/users/plants')
+          .expect(200, [])
+      })
+    })
+
+    // context(`Given there are plants with user`, () => {
+    //   const testUsers = makeUsersArray()
+    //   const testUserPlants = makePlantsArray()
+
+    //   beforeEach('insert users', () => {
+    //     return db
+    //       .into('users')
+    //       .insert(testUsers)
+    //       .then(() => {
+    //         return db
+    //           .into('user_plants')
+    //           .insert(testUserPlants)
+    //       }) 
+    //   })
+
+    //   it('responds with 200 and all of the users', () => {
+    //     return supertest(app)
+    //       .get('/api/users/plants')
+    //       .expect(200, testUserPlants)
+    //   })
+    // }) 
+
+
+    
+    // }
+    // context(`Given no users`, () => {
+    //   it(`responds with 404`, () => {
+    //     const plantId = 123456
+    //     return supertest(app)
+    //       .get(`/api/users/${plantId}`)
+    //       .expect(404, { error: { message: `User doesn't exist` } })
+    //   })
+    // })
 
   //   context('Given there are plants in the database', () => {
   //     const testUsers = makeUsersArray()
@@ -218,6 +251,6 @@ describe('Users Endpoints', function() {
   //         expect(res.body.toxicity).to.eql(expectedPlant.toxicity)
   //         expect(res.body.care_details).to.eql(expectedPlant.care_details)
   //       })
-  //   })
+    })
 
 })
