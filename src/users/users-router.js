@@ -31,7 +31,7 @@ usersRouter
     const knexInstance = req.app.get('db')
     UsersService.getAllPlantUsers(knexInstance)
       .then(users => {
-        res.json(users)
+        res.json(users.rows)
       })
       .catch(next)
   })
