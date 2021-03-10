@@ -14,12 +14,9 @@ const serializeUser = user => ({
   user_password: user.user_password
 })
 
-const serializePlant = plant => ({
-  id: plant.id,
-  name: plant.name,
-  plant_type: plant.plant_type,
-  toxicity: plant.toxicity, 
-  care_details: plant.care_details
+const serializeUserPlants = user_plants => ({
+  plant_id: user_plants.plant_id,
+  user_id: user_plants.user_id
 })
 
 usersRouter
@@ -47,8 +44,8 @@ usersRouter
   })
   //post new plant to user list
   .post(jsonParser, (req, res, next) => {
-    const { plant_id } = req.body
-    const newUserPlant = { plant_id }
+    const { plant_id, user_id } = req.body
+    const newUserPlant = { plant_id, user_id }
 
     for (const [key, value] of Object.entries(newUserPlant))
       if (value == null)
@@ -64,7 +61,7 @@ usersRouter
         res
           .status(201)
           .location(path.posix.join(req.originalUrl + `/${plant.plant_id}`))
-          .json(serializePlant(plant))
+          .json(serializeUserPlants(plant))
       })
       .catch(next)
   })
