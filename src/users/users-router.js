@@ -47,8 +47,8 @@ usersRouter
   })
   //post new plant to user list
   .post(jsonParser, (req, res, next) => {
-    const { name, plant_type, toxicity, care_details } = req.body
-    const newUserPlant = { name, plant_type, toxicity, care_details }
+    const { plant_id } = req.body
+    const newUserPlant = { plant_id }
 
     for (const [key, value] of Object.entries(newUserPlant))
       if (value == null)
@@ -63,7 +63,7 @@ usersRouter
       .then(plant => {
         res
           .status(201)
-          .location(path.posix.join(req.originalUrl + `/${plant.id}`))
+          .location(path.posix.join(req.originalUrl + `/${plant.plant_id}`))
           .json(serializePlant(plant))
       })
       .catch(next)
