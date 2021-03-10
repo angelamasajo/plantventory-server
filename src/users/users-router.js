@@ -14,8 +14,17 @@ const serializeUser = user => ({
   user_password: user.user_password
 })
 
+const serializePlant = plant => ({
+  id: plant.id,
+  name: plant.name,
+  plant_type: plant.plant_type,
+  toxicity: plant.toxicity, 
+  care_details: plant.care_details
+})
+
 usersRouter
   .route('/')
+  //get all users
   .get((req, res, next) => {
     const knexInstance = req.app.get('db')
     UsersService.getAllUsers(knexInstance)
@@ -27,6 +36,7 @@ usersRouter
 
 usersRouter
   .route('/plants')
+  //get all plants from user
   .get((req,res, next) => {
     const knexInstance = req.app.get('db')
     UsersService.getAllPlantUsers(knexInstance)
@@ -35,9 +45,52 @@ usersRouter
       })
       .catch(next)
   })
+  //post new plant to user list
+  .post(jsonParser, (req, res, next) => {
+    const { name, plant_type, toxicity, care_details } = req.body
+    const newUserPlant = { name, plant_type, toxicity, care_details }
+
+    for (const [key, value] of Object.entries(newUserPlant))
+      if (value == null)
+        return res.status(400).json({
+          error: { message: `Missing '${key}' in request body` }
+        })
+    
+    UsersService.insertUserPlant(
+      req.app.get('db'),
+      newUserPlant
+    )
+      .then(plant => {
+        res
+          .status(201)
+          .location(path.posix.join(req.originalUrl + `/${plant.id}`))
+          .json(serializePlant(plant))
+      })
+      .catch(next)
+  })
 
 usersRouter
   .route('/plants/:plant_id')
+  //get specific plant from user list
+  .all((req, res, next) => {
+    UsersService.getUserPlantById(
+      req.app.get('db'),
+      req.params.plant_id
+    )
+      .then(plant => {
+        if (!plant) {
+          return res.status(404).json({
+            error: { message: `Plant doesn't exist` }
+          })
+        }
+        res.plant = plant //save the article for the next middleware
+        next() //don't forget to call next so the next middleware happens
+      })
+      .catch(next)
+  })
+  .get((req, res, next) => {
+    res.json(serializeUser(res.plant))
+  })
   .delete((req, res, next) => {
   UsersService.deleteFromUserPlants(
     req.app.get('db'),
