@@ -72,7 +72,7 @@ usersRouter
   .all((req, res, next) => {
     UsersService.getUserPlantById(
       req.app.get('db'),
-      req.params.plant_id
+      req.params.plant_id,
     )
       .then(plant => {
         if (!plant) {
@@ -86,7 +86,7 @@ usersRouter
       .catch(next)
   })
   .get((req, res, next) => {
-    res.json(serializeUser(res.plant))
+    res.json(serializeUserPlants(res.plant))
   })
   .delete((req, res, next) => {
   UsersService.deleteFromUserPlants(
