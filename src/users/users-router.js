@@ -20,19 +20,7 @@ const serializeUserPlants = user_plants => ({
 })
 
 usersRouter
-  .route('/')
-  //get all users
-  .get((req, res, next) => {
-    const knexInstance = req.app.get('db')
-    UsersService.getAllUsers(knexInstance)
-      .then(users => {
-        res.json(users.map(serializeUser))
-      })
-      .catch(next)
-  })
-
-usersRouter
-  .route('/plants')
+  .route('/1/plants')
   //get all plants from user
   .get((req,res, next) => {
     const knexInstance = req.app.get('db')
@@ -52,6 +40,16 @@ usersRouter
         return res.status(400).json({
           error: { message: `Missing '${key}' in request body` }
         })
+
+    UsersService.getAllPlantUsers(req.app.get('db'))
+      .then(plant => {
+        if (plant_id === plant.id ) {
+          return res.status(400).json({
+            error: { message: 'Plant already in your list' }
+          })
+        }
+      })
+    //getting all plants, add condition if plant already in list, send error/message
     
     UsersService.insertUserPlant(
       req.app.get('db'),
@@ -67,27 +65,7 @@ usersRouter
   })
 
 usersRouter
-  .route('/plants/:plant_id')
-  //get specific plant from user list
-  .all((req, res, next) => {
-    UsersService.getUserPlantById(
-      req.app.get('db'),
-      req.params.plant_id,
-    )
-      .then(plant => {
-        if (!plant) {
-          return res.status(404).json({
-            error: { message: `Plant doesn't exist` }
-          })
-        }
-        res.plant = plant //save the article for the next middleware
-        next() //don't forget to call next so the next middleware happens
-      })
-      .catch(next)
-  })
-  .get((req, res, next) => {
-    res.json(serializeUserPlants(res.plant))
-  })
+  .route('/1/plants/:plant_id')
   .delete((req, res, next) => {
   UsersService.deleteFromUserPlants(
     req.app.get('db'),

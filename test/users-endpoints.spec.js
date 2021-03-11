@@ -3,7 +3,7 @@ const supertest = require('supertest')
 const app = require('../src/app')
 const { makePlantsArray } = require('./plants.fixtures')
 // const { makePlantsArray, makeMaliciousPlant } = require('./plants.fixtures')
-const { makeUsersArray, makeMaliciousUser } = require('./users.fixtures')
+const { makeUsersArray, makeUserPlantsArray } = require('./users.fixtures')
 
 describe('Users Endpoints', function() {
   let db
@@ -22,167 +22,40 @@ describe('Users Endpoints', function() {
 
   afterEach('cleanup',() => db.raw('TRUNCATE plants, users, user_plants RESTART IDENTITY CASCADE'))
 
-  //-----all users
-  describe(`GET /api/users`, () => {
-    context(`Given no users`, () => {
-      it(`responds with 200 and an empty list`, () => {
-        return supertest(app)
-          .get('/api/users')
-          .expect(200, [])
-      })
-    })
-
-    //not sure what's really happening here
-    context('Given there are users in the database', () => {
-      const testUsers = makeUsersArray()
-      const testPlants = makePlantsArray()
-
-      beforeEach('insert users', () => {
-        return db
-          .into('plants')
-          .insert(testPlants)
-          .then(() => {
-            return db
-              .into('users')
-              .insert(testUsers)
-          }) 
-      })
-
-      it('responds with 200 and all of the users', () => {
-        return supertest(app)
-          .get('/api/users')
-          .expect(200, testUsers)
-      })
-    })
-
-    context(`Given an XSS attack user`, () => {
-      const testPlants = makePlantsArray()
-      const { maliciousUser, expectedUser } = makeMaliciousUser()
-
-      beforeEach('insert malicious user', () => {
-        return db
-          .into('plants')
-          .insert(testPlants)
-          .then(() => {
-            return db
-              .into('users')
-              .insert([ maliciousUser ])
-          })
-      })
-
-
-      it('removes XSS attack content', () => {
-        return supertest(app)
-          .get(`/api/users`)
-          .expect(200)
-          .expect(res => {
-            expect(res.body[0].user_name).to.eql(expectedUser.user_name)
-            expect(res.body[0].user_password).to.eql(expectedUser.user_password)
-          })
-      })
-    })    
-  })
-
 
   //----all plants with user
-  describe(`GET /api/users/plants`, () => {
+  describe(`GET /api/users/1/plants`, () => {
     context(`Given no plants with user`, () => {
       it(`responds with 200 and an empty list`, () => {
         return supertest(app)
-          .get('/api/users/plants')
+          .get('/api/users/1/plants')
           .expect(200, [])
       })
     })
 
-    // context(`Given there are plants with user`, () => {
-    //   const testUsers = makeUsersArray()
-    //   const testUserPlants = makePlantsArray()
+    context(`Given there are plants with user`, () => {
+      const testUsers = makeUsersArray()
+      const testUserPlants = makeUserPlantsArray()
 
-    //   beforeEach('insert users', () => {
-    //     return db
-    //       .into('users')
-    //       .insert(testUsers)
-    //       .then(() => {
-    //         return db
-    //           .into('user_plants')
-    //           .insert(testUserPlants)
-    //       }) 
-    //   })
+      beforeEach('insert users', () => {
+        return db
+          .into('users')
+          .insert(testUsers)
+          .then(() => {
+            return db
+              .into('user_plants')
+              .insert(testUserPlants)
+          }) 
+      })
 
-    //   it('responds with 200 and all of the users', () => {
-    //     return supertest(app)
-    //       .get('/api/users/plants')
-    //       .expect(200, testUserPlants)
-    //   })
-    // }) 
+      it('responds with 200 and all of the user plants', () => {
+        return supertest(app)
+          .get('/api/users/1/plants')
+          .expect(200, testUserPlants)
+      })
+    }) 
 
-
-    
-    // }
-    // context(`Given no users`, () => {
-    //   it(`responds with 404`, () => {
-    //     const plantId = 123456
-    //     return supertest(app)
-    //       .get(`/api/users/${plantId}`)
-    //       .expect(404, { error: { message: `User doesn't exist` } })
-    //   })
-    // })
-
-  //   context('Given there are plants in the database', () => {
-  //     const testUsers = makeUsersArray()
-  //     const testPlants = makePlantsArray()
-
-  //     beforeEach('insert plants', () => {
-  //       return db
-  //         .into('users')
-  //         .insert(testUsers)
-  //         .then(() => {
-  //           return db
-  //             .into('plants')
-  //             .insert(testPlants)
-  //         }) 
-  //     })
-
-  //     it('responds with 200 and the specified plant', () => {
-  //       const plantId = 2
-  //       const expectedPlant = testPlants [plantId - 1]
-  //       return supertest(app)
-  //         .get(`/api/plants/${plantId}`)
-  //         .expect(200, expectedPlant)
-  //     })
-  //   })
-
-  //   context(`Given an XSS attack plant`, () => {
-  //     const testUsers = makeUsersArray()
-  //     const { maliciousPlant, expectedPlant } = makeMaliciousPlant()
-
-  //     beforeEach('insert malicious plant', () => {
-  //       return db
-  //         .into('users')
-  //         .insert(testUsers)
-  //         .then(() => {
-  //           return db
-  //             .into('plants')
-  //             .insert([ maliciousPlant ])
-  //         })
-  //     })
-
-  //     it('removes XSS attack content', () => {
-  //       return supertest(app)
-  //         .get(`/api/plants/${maliciousPlant.id}`)
-  //         .expect(200)
-  //         .expect(res => {
-  //           expect(res.body.name).to.eql(expectedPlant.name)
-  //           expect(res.body.plant_type).to.eql(expectedPlant.plant_type)
-  //           expect(res.body.toxicity).to.eql(expectedPlant.toxicity)
-  //           expect(res.body.care_details).to.eql(expectedPlant.care_details)
-  //         })
-  //     })
-  //   })
-
-  // })
-
-  // describe(`POST /api/plants`, () => {
+  // describe(`POST /api/users/1/plants`, () => {
   //   const testUsers = makeUsersArray();
   //   beforeEach('insert malicious plant', () => {
   //     return db

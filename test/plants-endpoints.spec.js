@@ -222,4 +222,45 @@ describe('Plants Endpoints', function() {
         })
     })
   })
+
+  describe(`DELETE /api/plants/:plant_id`, () => {
+    context(`Given no plants`, () => {
+      it(`responds with 404`, () => {
+        const plantId = 123456
+        return supertest(app)
+          .delete(`/api/plants/${plantId}`)
+          .expect(404, { error: { message: `Plant doesn't exist` } })
+      })
+    })
+
+    context(`Given there are plants in the database`, () => {
+      const testUsers = makeUsersArray()
+      const testPlants= makePlantsArray()
+
+      beforeEach('insert plants', () => {
+        return db
+          .into('users')
+          .insert(testUsers)
+          .then(() => {
+            return db
+              .into('plants')
+              .insert(testPlants)
+          }) 
+      })
+
+      it(`responds with 204 and removes the article`, () => {
+        const idToRemove = 2
+        const expectedPlants = testPlants.filter(plant => plant.id !== idToRemove)
+        return supertest(app)
+          .delete(`/api/plants/${idToRemove}`)
+          .expect(204)
+          .then(res =>
+            supertest(app)
+              .get(`/api/plants`)
+              .expect(expectedPlants)
+          )
+      })
+    })
+  })
+
 })
