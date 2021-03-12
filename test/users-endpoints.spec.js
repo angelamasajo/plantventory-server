@@ -55,62 +55,58 @@ describe('Users Endpoints', function() {
       })
     }) 
 
-  // describe(`POST /api/users/1/plants`, () => {
-  //   const testUsers = makeUsersArray();
-  //   beforeEach('insert malicious plant', () => {
-  //     return db
-  //       .into('users')
-  //       .insert(testUsers)
-  //   })
+  })
+
+  describe(`POST /api/users/1/plants`, () => {
+    const testUserPlants = makeUserPlantsArray();
+    beforeEach('insert plant', () => {
+      return db
+        .into('user_plants')
+        .insert(testUserPlants)
+    })
     
-  //   it(`creates a plant, responding with 201 and the new plant`, function() {
-  //     this.retries(3)
-  //     const newPlant = {
-  //       name: 'Test new plant',
-  //       plant_type: 'Succulent',
-  //       toxicity: 'Toxic',
-  //       care_details: 'Care detail here'
-  //     }
-  //     return supertest(app)
-  //       .post('/api/plants')
-  //       .send(newPlant)
-  //       .expect(201)
-  //       .expect(res => {
-  //         expect(res.body.name).to.eql(newPlant.name)
-  //         expect(res.body.plant_type).to.eql(newPlant.plant_type)
-  //         expect(res.body.toxicity).to.eql(newPlant.toxicity)
-  //         expect(res.body.care_details).to.eql(newPlant.care_details)
-  //         expect(res.body).to.have.property('id')
-  //         expect(res.headers.location).to.eql(`/api/plants/${res.body.id}`)
-  //       })
-  //       .then(res =>
-  //         supertest(app)
-  //           .get(`/api/plants/${res.body.id}`)
-  //           .expect(res.body)
-  //       )
-  //   })
+    it(`creates a user plant, responding with 201 and the new plant`, function() {
+      this.retries(3)
+      const newUserPlant = {
+        plant_id: 100000,
+        user_id: 1
+      }
+      return supertest(app)
+        .post('/api/users/1/plants')
+        .send(newUserPlant)
+        .expect(201)
+        .expect(res => {
+          expect(res.body.plant_id).to.eql(newUserPlant.plant_id)
+          expect(res.body.user_id).to.eql(newUserPlant.user_id)
+          // expect(res.body).to.have.property('id')
+          expect(res.headers.location).to.eql(`/api/users/1/plants`)
+        })
+        .then(res =>
+          supertest(app)
+            .get(`/api/users/1/plants`)
+            .expect(res.body)
+        )
+    })
 
-  //   const requiredFields = ['name', 'plant_type', 'toxicity', 'care_details']
+    const requiredFields = ['plant_id', 'user_id']
 
-  //   requiredFields.forEach(field => {
-  //     const newPlant = {
-  //       name: 'Test new plant',
-  //       plant_type: 'Succulent',
-  //       toxicity: 'Toxic',
-  //       care_details: 'Care detail here'
-  //     }
+    requiredFields.forEach(field => {
+      const newUserPlant = {
+        plant_id: 100000,
+        user_id: 1,
+      }
 
-  //     it(`responds with 400 and an error message when the '${field}' is missing`, () => {
-  //       delete newPlant[field]
+      it(`responds with 400 and an error message when the '${field}' is missing`, () => {
+        delete newUserPlant[field]
 
-  //       return supertest(app)
-  //         .post('/api/plants')
-  //         .send(newPlant)
-  //         .expect(400, {
-  //           error: { message: `Missing '${field}' in request body` }
-  //         })
-  //     })
-  //   })
+        return supertest(app)
+          .post('/api/users/1/plants')
+          .send(newUserPlant)
+          .expect(400, {
+            error: { message: `Missing '${field}' in request body` }
+          })
+      })
+    })
 
   //   it('removes XSS attack content from response', () => {
   //     const { maliciousPlant, expectedPlant } = makeMaliciousPlant()
@@ -124,6 +120,5 @@ describe('Users Endpoints', function() {
   //         expect(res.body.toxicity).to.eql(expectedPlant.toxicity)
   //         expect(res.body.care_details).to.eql(expectedPlant.care_details)
   //       })
-    })
-
+  })
 })
