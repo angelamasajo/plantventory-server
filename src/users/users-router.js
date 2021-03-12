@@ -58,7 +58,7 @@ usersRouter
       .then(plant => {
         res
           .status(201)
-          .location(path.posix.join(req.originalUrl + `/${plant.plant_id}`))
+          .location(path.posix.join(req.originalUrl))
           .json(serializeUserPlants(plant))
       })
       .catch(next)
