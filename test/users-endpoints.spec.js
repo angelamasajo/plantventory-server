@@ -34,8 +34,10 @@ describe('Users Endpoints', function() {
     })
 
     context(`Given there are plants with user`, () => {
+      
       const testUsers = makeUsersArray()
       const testUserPlants = makeUserPlantsArray()
+      const testPlants = makePlantsArray()
 
       beforeEach('insert users', () => {
         return db
@@ -43,33 +45,66 @@ describe('Users Endpoints', function() {
           .insert(testUsers)
           .then(() => {
             return db
-              .into('user_plants')
-              .insert(testUserPlants)
-          }) 
+              .into('plants')
+              .insert(testPlants)
+              .then(() => {
+                return db
+                  .into('user_plants')
+                  .insert(testUserPlants)
+              })
+          })
       })
 
       it('responds with 200 and all of the user plants', () => {
+        const expected = [{
+            "plant_name": "Monstera Deliciosa",
+            "care_details": "Here\"s the care detail for the monstera",
+            "toxicity": "Toxic",
+            "plant_type": "Tropical",
+            "plant_id": 1,
+            "user": "user 1",
+            "user_id": 1
+        }]
         return supertest(app)
           .get('/api/users/1/plants')
-          .expect(200, testUserPlants)
+          .expect(200, expected)
       })
     }) 
 
   })
 
   describe(`POST /api/users/1/plants`, () => {
-    const testUserPlants = makeUserPlantsArray();
-    beforeEach('insert plant', () => {
+
+    const testUsers = makeUsersArray()
+    const testUserPlants = makeUserPlantsArray()
+    const testPlants = makePlantsArray()
+
+    beforeEach('insert users', () => {
       return db
-        .into('user_plants')
-        .insert(testUserPlants)
+        .into('users')
+        .insert(testUsers)
+        .then(() => {
+          return db
+            .into('plants')
+            .insert(testPlants)
+            .then(() => {
+              return db
+                .into('user_plants')
+                .insert(testUserPlants)
+            })
+        })
     })
     
-    it(`creates a user plant, responding with 201 and the new plant`, function() {
+    it.only(`creates a user plant, responding with 201 and the new plant`, function() {
       this.retries(3)
       const newUserPlant = {
-        plant_id: 100000,
-        user_id: 1
+          plant_name: 'Monstera Deliciosa',
+          care_details: 'Here"s the care detail for the monstera',
+          toxicity: 'Toxic',
+          plant_type: 'Tropical',
+          plant_id: 1,
+          user_name: 'user 1',
+          user_id: 1,
       }
       return supertest(app)
         .post('/api/users/1/plants')
@@ -92,7 +127,7 @@ describe('Users Endpoints', function() {
 
     requiredFields.forEach(field => {
       const newUserPlant = {
-        plant_id: 100000,
+        plant_id: 1,
         user_id: 1,
       }
 
