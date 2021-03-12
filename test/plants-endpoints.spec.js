@@ -31,7 +31,6 @@ describe('Plants Endpoints', function() {
       })
     })
 
-    //not sure what's really happening here
     context('Given there are plants in the database', () => {
       const testUsers = makeUsersArray()
       const testPlants = makePlantsArray()

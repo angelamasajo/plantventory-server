@@ -1,15 +1,5 @@
 const UsersService = {
-  getAllUsers(knex) {
-    return knex
-      .select('*')
-      .from('users')
-  },
-  // getAllPlantUsers(knex) {
-  //   return knex
-  //     .select('*')
-  //     .from('user_plants')
-  // },
-  getAllPlantUsers(knex) {
+  getAllUserPlants(knex) {
     return knex.raw(`
       SELECT 
         plants.name as plant_name,
@@ -29,13 +19,6 @@ const UsersService = {
         ON user_plants.user_id = users.id
         ;
     `)
-  },
-  getUserPlantById(knex, plant_id) {
-    return knex
-      .from('user_plants')
-      .select('*')
-      .where('plant_id', plant_id)
-      .first()
   },
   deleteFromUserPlants(knex, plant_id) {
     return knex('user_plants')
