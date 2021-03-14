@@ -95,16 +95,17 @@ describe('Users Endpoints', function() {
         })
     })
     
-    it.only(`creates a user plant, responding with 201 and the new plant`, function() {
-      this.retries(3)
+    it(`creates a user plant, responding with 201 and the new plant`, function() {
       const newUserPlant = {
-          plant_name: 'Monstera Deliciosa',
-          care_details: 'Here"s the care detail for the monstera',
-          toxicity: 'Toxic',
-          plant_type: 'Tropical',
-          plant_id: 1,
-          user_name: 'user 1',
-          user_id: 1,
+        plant_id: 1,
+        user_id: 1
+          // plant_name: 'Monstera Deliciosa',
+          // care_details: 'Here"s the care detail for the monstera',
+          // toxicity: 'Toxic',
+          // plant_type: 'Tropical',
+          // plant_id: 1,
+          // user_name: 'user 1',
+          // user_id: 1,
       }
       return supertest(app)
         .post('/api/users/1/plants')
@@ -113,14 +114,9 @@ describe('Users Endpoints', function() {
         .expect(res => {
           expect(res.body.plant_id).to.eql(newUserPlant.plant_id)
           expect(res.body.user_id).to.eql(newUserPlant.user_id)
-          // expect(res.body).to.have.property('id')
-          expect(res.headers.location).to.eql(`/api/users/1/plants`)
+
         })
-        .then(res =>
-          supertest(app)
-            .get(`/api/users/1/plants`)
-            .expect(res.body)
-        )
+
     })
 
     const requiredFields = ['plant_id', 'user_id']
@@ -129,6 +125,13 @@ describe('Users Endpoints', function() {
       const newUserPlant = {
         plant_id: 1,
         user_id: 1,
+        // plant_name: 'Monstera Deliciosa',
+        // care_details: 'Here"s the care detail for the monstera',
+        // toxicity: 'Toxic',
+        // plant_type: 'Tropical',
+        // plant_id: 1,
+        // user_name: 'user 1',
+        // user_id: 1,
       }
 
       it(`responds with 400 and an error message when the '${field}' is missing`, () => {
@@ -142,18 +145,5 @@ describe('Users Endpoints', function() {
           })
       })
     })
-
-  //   it('removes XSS attack content from response', () => {
-  //     const { maliciousPlant, expectedPlant } = makeMaliciousPlant()
-  //     return supertest(app)
-  //       .post(`/api/plants`)
-  //       .send(maliciousPlant)
-  //       .expect(201)
-  //       .expect(res => {
-  //         expect(res.body.name).to.eql(expectedPlant.name)
-  //         expect(res.body.plant_type).to.eql(expectedPlant.plant_type)
-  //         expect(res.body.toxicity).to.eql(expectedPlant.toxicity)
-  //         expect(res.body.care_details).to.eql(expectedPlant.care_details)
-  //       })
   })
 })

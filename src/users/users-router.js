@@ -34,6 +34,7 @@ usersRouter
   .post(jsonParser, (req, res, next) => {
     const { plant_id, user_id } = req.body
     const newUserPlant = { plant_id, user_id }
+    console.log(plant_id, user_id, 'angela')
 
     for (const [key, value] of Object.entries(newUserPlant))
       if (value == null)
@@ -43,12 +44,15 @@ usersRouter
 
     UsersService.getAllUserPlants(req.app.get('db'))
       .then(plant => {
+        console.log(plant, 'checkplant')
         if (plant_id === plant.id ) {
           return res.status(400).json({
             error: { message: 'Plant already in your list' }
           })
         }
+        res.status(201)
       })
+      .catch(next)
     //getting all plants, add condition if plant already in list, send error/message
     
     UsersService.insertUserPlant(

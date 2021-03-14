@@ -36,26 +36,8 @@ function makeUserPlantsArray() {
   ]
 }
 
-// function makeMaliciousUser() {
-//   const maliciousUser = {
-//     id: 911,
-//     user_name: "bad name here",
-//     user_password: 'bad pass here <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">',
-//   };
-//   const expectedUser = {
-//     ...maliciousUser,
-//     user_name: "bad name here",
-//     user_password: 'bad pass here <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">',
-//   };
-//   return {
-//     maliciousUser,
-//     expectedUser,
-//   };
-// }
-
 
 module.exports = {
   makeUsersArray,
-  // makeMaliciousUser,
   makeUserPlantsArray
 };
