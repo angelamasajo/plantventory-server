@@ -25,8 +25,8 @@ usersRouter
   .get((req,res, next) => {
     const knexInstance = req.app.get('db')
     UsersService.getAllUserPlants(knexInstance)
-      .then(users => {
-        res.json(users.rows)
+      .then(plants => {
+        res.json(plants.rows)
       })
       .catch(next)
   })
@@ -42,10 +42,11 @@ usersRouter
           error: { message: `Missing '${key}' in request body` }
         })
 
+    //edit
     UsersService.getAllUserPlants(req.app.get('db'))
       .then(plant => {
         console.log(plant, 'checkplant')
-        if (plant_id === plant.id ) {
+        if (plant_id === plant.id) {
           return res.status(400).json({
             error: { message: 'Plant already in your list' }
           })
