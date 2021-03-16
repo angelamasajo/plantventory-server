@@ -45,27 +45,42 @@ usersRouter
     UsersService.getAllUserPlants(req.app.get('db'))
       .then(plant => {
         console.log(plant.rows, 'sfasdkfajdifajdsofa=========')
-        if (plant_id === plant.rows) {
+        const matchPlant = plant.rows.find(angela => {
+          if (angela.plant_id === plant_id) {
+            return angela
+          }
+        })
+        if (matchPlant) {
           return res.status(400).json({
             error: { message: 'Plant already in your list' }
           })
         }
-        res.status(201)
+        UsersService.insertUserPlant(
+          req.app.get('db'),
+          newUserPlant
+        )
+          .then(plant => {
+            res
+              .status(201)
+              .location(path.posix.join(req.originalUrl))
+              .json(serializeUserPlants(plant))
+          })
+          .catch(next)
+        // res.status(201)
       })
       .catch(next)
-    //getting all plants, add condition if plant already in list, send error/message
     
-    UsersService.insertUserPlant(
-      req.app.get('db'),
-      newUserPlant
-    )
-      .then(plant => {
-        res
-          .status(201)
-          .location(path.posix.join(req.originalUrl))
-          .json(serializeUserPlants(plant))
-      })
-      .catch(next)
+    // UsersService.insertUserPlant(
+    //   req.app.get('db'),
+    //   newUserPlant
+    // )
+    //   .then(plant => {
+    //     res
+    //       .status(201)
+    //       .location(path.posix.join(req.originalUrl))
+    //       .json(serializeUserPlants(plant))
+    //   })
+    //   .catch(next)
   })
 
 usersRouter
