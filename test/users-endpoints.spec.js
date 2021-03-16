@@ -132,4 +132,53 @@ describe('Users Endpoints', function() {
       })
     })
   })
+
+
+  describe(`DELETE /api/users/1/plants/:plant_id`, () => {
+    context(`Given no plants`, () => {
+      it(`responds with 204, no content`, () => {
+        const plantId = 123456
+        return supertest(app)
+          .delete(`/api/users/1/plants/${plantId}`)
+          .expect(204)
+      })
+    })
+
+    context(`Given there are user plants in the database`, () => {
+
+      const testUsers = makeUsersArray()
+      const testUserPlants = makeUserPlantsArray()
+      const testPlants = makePlantsArray()
+
+      beforeEach('insert users', () => {
+        return db
+          .into('users')
+          .insert(testUsers)
+          .then(() => {
+            return db
+              .into('plants')
+              .insert(testPlants)
+              .then(() => {
+                return db
+                  .into('user_plants')
+                  .insert(testUserPlants)
+              })
+          })
+      })
+
+      it(`responds with 204 and removes the article`, () => {
+        const idToRemove = 1
+        const expectedUserPlants = testUserPlants.filter(plant => plant.plant_id !== idToRemove)
+
+        return supertest(app)
+          .delete(`/api/users/1/plants/${idToRemove}`)
+          .expect(204)
+          .then(res =>
+            supertest(app)
+              .get(`/api/users/1/plants`)
+              .expect(expectedUserPlants)
+          )
+      })
+    })
+  })
 })
