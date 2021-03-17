@@ -50,9 +50,10 @@ usersRouter
             return angela
           }
         })
+
         if (matchPlant) {
-          return res.status(400).json({
-            error: { message: 'Plant already in your list' }
+          return res.status(400).send({
+            error: 'Plant already in your list'
           })
         }
         UsersService.insertUserPlant(

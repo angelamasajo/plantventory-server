@@ -97,7 +97,7 @@ describe('Users Endpoints', function() {
     
     it(`creates a user plant, responding with 201 and the new plant`, function() {
       const newUserPlant = {
-        plant_id: 1,
+        plant_id: 2,
         user_id: 1
       }
       return supertest(app)
