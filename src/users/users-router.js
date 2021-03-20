@@ -43,7 +43,6 @@ usersRouter
 
     UsersService.getAllUserPlants(req.app.get("db"))
       .then((plant) => {
-        console.log(plant.rows, "sfasdkfajdifajdsofa=========");
         const matchPlant = plant.rows.find((angela) => {
           if (angela.plant_id === plant_id) {
             return angela;
