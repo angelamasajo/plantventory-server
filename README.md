@@ -1,26 +1,54 @@
-# Express Boilerplate!
+# Plantventory Server
 
-This is a boilerplate project used for starting new projects!
+Link to app: https://plantventory-app.vercel.app/
 
-## Set up
+## About the App
 
-Complete the following steps to start a new project (NEW-PROJECT-NAME):
+Take care of your plants with ease. Plantventory allows users tobrowse through available plants within the database, where they can find plant type, toxicity, and care details to help them find proper care for plants.
 
-1. Clone this repository to your local machine `git clone BOILERPLATE-URL NEW-PROJECTS-NAME`
-2. `cd` into the cloned repository
-3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
-4. Install the node dependencies `npm install`
-5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
-6. Edit the contents of the `package.json` to use NEW-PROJECT-NAME instead of `"name": "express-boilerplate",`
+By adding plants to the their own user list, users can easily sift through it to keep 
+important plant details in one place.
 
-## Scripts
+## Pages
 
-Start the application `npm start`
+### Landing Page 
+![landing_page](/app-screenshots/plantventory-home.png)
+This is the introduction located on the main page, explaining what Plantventory does and what it hopes to accomplish. 
 
-Start nodemon for the application `npm run dev`
 
-Run the tests `npm test`
+### All Plants Page
+![allplants_page](/app-screenshots/plantventory-allplants.png)
+This page manages the full list of plants in the database, where users can add plants in their user list. It can also filter through the list of plants via search box and filters for plant type and toxicity.
 
-## Deploying
+### My Plants Page
+![myplants_page](/app-screenshots/plantventory-myplants.png)
 
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's main branch.
+The demo user can see their own plant inventory in this page, including information about toxicity, plant type, and care details for each plant.
+
+### Add Plant Page
+![addplant_page](/app-screenshots/plantventory-addplant.png)
+Users can contribute plants to the database and add to their list if they so wish. It provides options for plant type, toxicity, and area for care details as well.
+
+
+## Technology Used
+- HTML, CSS
+- React
+- Node
+- Express
+- PostgreSQL
+
+
+## API Documentation
+
+### Endpoints
+
+#### /api/plants
+- GET: access to all the plants
+- POST: allow users post plants to database
+
+#### /api/users/1/plants
+- GET: access demo user plants
+- POST: post plants from all plants to user plants
+
+#### /api/users/1/plants/:plant_id
+- DELETE: allow users to delete plants from user list

@@ -1,102 +1,78 @@
-const path = require('path')
-const express = require('express')
+const path = require("path");
+const express = require("express");
 // const xss = require('xss')
-const logger = require('../logger')
-const UsersService = require('./users-service')
-const app = require('../app')
+const logger = require("../logger");
+const UsersService = require("./users-service");
+const app = require("../app");
 
-const usersRouter = express.Router()
-const jsonParser = express.json()
+const usersRouter = express.Router();
+const jsonParser = express.json();
 
-const serializeUser = user => ({
+const serializeUser = (user) => ({
   id: user.id,
   user_name: user.user_name,
-  user_password: user.user_password
-})
+  user_password: user.user_password,
+});
 
-const serializeUserPlants = user_plants => ({
+const serializeUserPlants = (user_plants) => ({
   plant_id: user_plants.plant_id,
-  user_id: user_plants.user_id
-})
+  user_id: user_plants.user_id,
+});
 
 usersRouter
-  .route('/1/plants')
+  .route("/1/plants")
   //get all plants from user
-  .get((req,res, next) => {
-    const knexInstance = req.app.get('db')
+  .get((req, res, next) => {
+    const knexInstance = req.app.get("db");
     UsersService.getAllUserPlants(knexInstance)
-      .then(plants => {
-        res.json(plants.rows)
+      .then((plants) => {
+        res.json(plants.rows);
       })
-      .catch(next)
+      .catch(next);
   })
   //post new plant to user list
   .post(jsonParser, (req, res, next) => {
-    const { plant_id, user_id } = req.body
-    const newUserPlant = { plant_id, user_id }
+    const { plant_id, user_id } = req.body;
+    const newUserPlant = { plant_id, user_id };
 
     for (const [key, value] of Object.entries(newUserPlant))
       if (value == null)
         return res.status(400).json({
-          error: { message: `Missing '${key}' in request body` }
-        })
+          error: { message: `Missing '${key}' in request body` },
+        });
 
-    //edit
-    UsersService.getAllUserPlants(req.app.get('db'))
-      .then(plant => {
-        console.log(plant.rows, 'sfasdkfajdifajdsofa=========')
-        const matchPlant = plant.rows.find(angela => {
+    UsersService.getAllUserPlants(req.app.get("db"))
+      .then((plant) => {
+        console.log(plant.rows, "sfasdkfajdifajdsofa=========");
+        const matchPlant = plant.rows.find((angela) => {
           if (angela.plant_id === plant_id) {
-            return angela
+            return angela;
           }
-        })
+        });
 
         if (matchPlant) {
           return res.status(400).send({
-            error: 'Plant already in your list'
-          })
+            error: "Plant already in your list",
+          });
         }
-        UsersService.insertUserPlant(
-          req.app.get('db'),
-          newUserPlant
-        )
-          .then(plant => {
+        UsersService.insertUserPlant(req.app.get("db"), newUserPlant)
+          .then((plant) => {
             res
               .status(201)
               .location(path.posix.join(req.originalUrl))
-              .json(serializeUserPlants(plant))
+              .json(serializeUserPlants(plant));
           })
-          .catch(next)
-        // res.status(201)
+          .catch(next);
       })
-      .catch(next)
-    
-    // UsersService.insertUserPlant(
-    //   req.app.get('db'),
-    //   newUserPlant
-    // )
-    //   .then(plant => {
-    //     res
-    //       .status(201)
-    //       .location(path.posix.join(req.originalUrl))
-    //       .json(serializeUserPlants(plant))
-    //   })
-    //   .catch(next)
-  })
+      .catch(next);
+  });
 
-usersRouter
-  .route('/1/plants/:plant_id')
-  .delete((req, res, next) => {
-  UsersService.deleteFromUserPlants(
-    req.app.get('db'),
-    req.params.plant_id
-  )
+usersRouter.route("/1/plants/:plant_id").delete((req, res, next) => {
+  UsersService.deleteFromUserPlants(req.app.get("db"), req.params.plant_id)
     .then(() => {
-      res.status(204).end()
+      res.status(204).end();
     })
-    .catch(next)
-})
+    .catch(next);
+});
 
-  
-
-module.exports = usersRouter
+module.exports = usersRouter;

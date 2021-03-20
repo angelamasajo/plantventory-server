@@ -47,17 +47,17 @@ function makePlantsArray() {
 
 function makeMaliciousPlant() {
   const maliciousPlant = {
-    id: 9000, 
-    name: 'hahahaha',
-    plant_type: 'Other', 
-    toxicity: 'Pet-safe',
+    id: 9000,
+    name: "hahahaha",
+    plant_type: "Other",
+    toxicity: "Pet-safe",
     care_details: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`,
   };
   const expectedPlant = {
     ...maliciousPlant,
-    name: 'hahahaha',
-    plant_type: 'Other',
-    toxicity: 'Pet-safe',
+    name: "hahahaha",
+    plant_type: "Other",
+    toxicity: "Pet-safe",
     care_details: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`,
   };
   return {
@@ -68,5 +68,5 @@ function makeMaliciousPlant() {
 
 module.exports = {
   makePlantsArray,
-  makeMaliciousPlant
+  makeMaliciousPlant,
 };
