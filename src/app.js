@@ -14,7 +14,7 @@ const morganOption = NODE_ENV === "production" ? "tiny" : "common";
 app.use(morgan(morganOption));
 app.use(helmet());
 
-const allowedOrigins = ['http://localhost:3000', 'https://plantventory-app.vercel.app/'];
+const allowedOrigins = ['http://localhost:3000', 'https://plantventory-app.vercel.app'];
 
 app.use(cors({
   origin: function(origin, callback){
